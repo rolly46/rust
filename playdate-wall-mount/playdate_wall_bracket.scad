@@ -8,7 +8,7 @@
 // Coordinates (as mounted): X along the wall, Y away from the wall, Z up.
 // The wall is the plane y = 0; the bottom edge of the dock sits at z = 0.
 //
-// Print upright, as mounted (the ledge flat on the bed). No supports needed.
+// Print upright, as mounted (bottom face on the bed). No supports needed.
 //
 // Values marked MEASURE are estimates taken from the model's photos. Check
 // them against your printed dock (calipers on the original foot are best)
@@ -33,7 +33,7 @@ bracket_h       = 40;    // height of the bracket behind the dock
 width_inset     = 2;     // bracket is this much narrower than the dock per side
 
 /* [Playdate safety ledge] */
-ledge           = true;  // shelf under the dock and Playdate, in case it slips
+ledge           = false; // optional shelf under the dock and Playdate, in case it slips
 ledge_t         = 3;     // shelf thickness
 playdate_depth  = 9;     // Playdate thickness
 ledge_extra     = 2;     // extra shelf depth beyond the Playdate

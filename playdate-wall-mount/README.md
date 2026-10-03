@@ -19,7 +19,7 @@ MakerWorld download.
 | --- | --- |
 | Angled foot tilts the dock back | Dock hangs flat, 20 mm off the wall |
 | Cable exits behind the foot | Cable bends down inside the bracket and drops out the bottom |
-| Playdate held by magnets only | Optional ledge under the dock and Playdate catches it if it slips |
+| Playdate held by magnets only | Same by default; set `ledge = true` for a shelf that catches the Playdate if it slips |
 
 ## Measure before printing
 
@@ -51,7 +51,7 @@ The included `playdate_wall_bracket.stl` uses the defaults above.
 
 ## Printing
 
-- Print it upright, as it sits on the wall, with the ledge flat on the bed.
+- Print it upright, as it sits on the wall, with the bottom face on the bed.
   Every hole and overhang is shaped to print without supports.
 - PLA or PETG, 3 or more walls, 20% or more infill. The keyhole slots carry
   the load, so don't skimp on walls.
