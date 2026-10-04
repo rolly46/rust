@@ -11,7 +11,8 @@
 //   - wires from the board's 5 V and GND pads run in grooves on the back to
 //     the magnets; small printed pins press each bare wire onto its magnet,
 //     and the wall holds the pins in
-//   - three 15 x 3 mm magnets near the middle add holding force
+//   - three 10 x 2 mm magnets in the middle, over the steel strip inside the
+//     Playdate's back cover, do most of the holding
 //   - two countersunk screws through the front fix it to the wall; the
 //     Playdate covers them when it is docked
 //
@@ -23,29 +24,32 @@ part = "plate";  // [plate, pins]
 
 /* [Plate] */
 plate_w        = 79;    // a little wider than the Playdate (76 mm)
-plate_h        = 77;    // a little taller than the Playdate (74 mm)
+plate_h        = 79;    // a little taller than the Playdate (74 mm)
 corner_r       = 6;
 edge_round     = 0.8;   // softened front edge
-front_skin     = 1.2;   // material in front of the compartment
+hold_floor     = 0.6;   // between the compartment and the holding magnets
 
 /* [Magnets] */
-// MEASURE: centre-to-centre of the Playdate's back corner screws, across and
-// up. The magnets must land on them for charging to work.
+// Centre-to-centre of the Playdate's back corner holes, across and up.
+// 67 mm across is measured from the Minimalist Playdate Stand, whose M2 screws
+// thread into those holes. 67 mm up is estimated from a photo of the inside
+// of the back cover (roughly square hole pattern); check it if you can.
 magnet_dx      = 67;
-magnet_dy      = 65;
+magnet_dy      = 67;
 magnet_d       = 8;
 magnet_t       = 3;
 magnet_fit     = 0.15;  // added to the pocket diameter; glue the magnets in
 
 /* [Holding magnets] */
-// Three bigger magnets near the middle of the Playdate's back do most of the
-// holding, as on the Minimalist Playdate Stand. They carry no current. Two
-// sit either side of the plug channel at the Playdate's centre height and
-// one below it.
-hold_d         = 15;
-hold_t         = 3;     // listed 3 mm; often nearer 2.6, which just sits a little lower
+// Inside the Playdate's back cover, dead centre, is a steel strip about
+// 35 x 10 mm (it is what the Minimalist Playdate Stand's magnets grab). Three
+// 10 x 2 mm magnets sit in a row right over it and do most of the holding.
+// They carry no current. They sit in front of the plug channel, which is
+// what sets the plate's thickness.
+hold_d         = 10;
+hold_t         = 2;
 hold_fit       = 0.2;
-hold_magnets   = [[-16, 0], [16, 0], [0, -18]];
+hold_magnets   = [[-11, 0], [0, 0], [11, 0]];
 
 /* [USB-C board and plug] */
 // The board bay is deliberately roomy: 22 x 20 mm fits nearly every USB-C
@@ -78,7 +82,7 @@ eps = 0.01;
 // Depth of the compartment (from the wall) is set by the plug, which lies
 // flat against the wall.
 bay_d    = plug_t + fit;
-plate_t  = bay_d + front_skin;                 // 8.2 mm with the defaults
+plate_t  = bay_d + hold_floor + hold_t;        // 9.6 mm with the defaults
 back_layer = plate_t - magnet_t;               // behind the magnets
 pin_l    = back_layer - 0.8;                   // leaves 0.8 mm for the wire coil
 
@@ -97,11 +101,7 @@ assert(magnet_dx / 2 + magnet_d / 2 + 1.2 <= plate_w / 2, "magnets too close to 
 assert(magnet_dy / 2 + magnet_d / 2 + 1.2 <= plate_h / 2, "magnets too close to the top or bottom edge");
 assert(board_y1 + fit + 2 <= plate_h / 2, "board bay runs into the top edge");
 assert(board_floor <= plate_t - 0.8, "board shelf leaves too little front skin");
-// The holding magnets beside the plug channel need a wall between them and it.
-for (m = hold_magnets)
-    assert(abs(m[1]) > plug_y0 + plug_l + 8 || m[1] + hold_d / 2 < plug_y0 - 9 - 1.5
-           || abs(m[0]) - hold_d / 2 >= (plug_w + 2 * fit) / 2 + 1.5,
-           "a holding magnet runs into the plug channel");
+assert(hold_d + 1 <= magnet_dy - magnet_d, "holding magnets too big for the plate");
 
 magnets = [for (sx = [-1, 1], sy = [-1, 1]) [sx * magnet_dx / 2, sy * magnet_dy / 2]];
 
