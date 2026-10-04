@@ -35,7 +35,8 @@ charger won't switch on 5 V and nothing charges. Bare 24-pin breakouts
 usually leave them off; the 2-pin "5V" boards have them.
 
 If you'd rather buy from a known brand, the Adafruit USB Type C Breakout
-Board, Downstream Connection (product 4090) has the resistors and fits.
+Board, Downstream Connection (product 4090) has the resistors; check its
+listed size is under 22 × 20 mm before you order.
 
 Print `playdate_flush_dock.stl` (the plate) and `playdate_contact_pins.stl`
 (four small pins; you need two).
