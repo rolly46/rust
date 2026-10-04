@@ -1,25 +1,31 @@
 // Playdate magnetic charging dock: flush wall plate
 //
 // A one-piece, wall-mounted take on the MakerWorld "Playdate Magnetic
-// Charging Dock" (model 1635754). The dock is a single thin plate:
+// Charging Dock" (model 1635754). The dock is a single plate:
 //
 //   - its back is completely flat and sits flush on the wall
 //   - four 8 x 3 mm magnets sit flush in the front face, as on the original
-//   - the USB cable comes out of a hole in the wall directly behind the
-//     centre of the plate; its two power wires run in grooves on the back
-//     face to the magnets, where they are clamped against the magnets when
-//     the plate is screwed down
+//   - a compartment in the back holds a small USB-C 5 V breakout board, so
+//     a normal USB-C cable plugs straight in; the cable comes out of a hole
+//     in the wall behind the centre of the plate
+//   - wires from the board's 5 V and GND pads run in grooves on the back to
+//     the magnets; small printed pins press each bare wire onto its magnet,
+//     and the wall holds the pins in
 //   - two countersunk screws through the front fix it to the wall; the
 //     Playdate covers them when it is docked
 //
 // Coordinates (as printed): X across, Y up the wall, Z out from the wall.
 // The back face is z = 0. Print it back face down: flat, no supports.
+// Set `part` to "pins" to export the contact pins.
+
+part = "plate";  // [plate, pins]
 
 /* [Plate] */
 plate_w        = 79;    // a little wider than the Playdate (76 mm)
 plate_h        = 77;    // a little taller than the Playdate (74 mm)
 corner_r       = 6;
 edge_round     = 0.8;   // softened front edge
+front_skin     = 1.2;   // material in front of the compartment
 
 /* [Magnets] */
 // MEASURE: centre-to-centre of the Playdate's back corner screws, across and
@@ -30,12 +36,24 @@ magnet_d       = 8;
 magnet_t       = 3;
 magnet_fit     = 0.15;  // added to the pocket diameter; glue the magnets in
 
+/* [USB-C board and plug] */
+// MEASURE your breakout board and cable. Defaults suit the common 2-pin
+// USB-C "5V" breakout boards (with the CC resistors fitted) and a standard
+// straight USB-C plug.
+board_w        = 13;    // across the socket
+board_l        = 11;    // along the plug direction
+board_pcb_t    = 1.0;
+socket_h       = 3.3;   // height of the socket above the PCB
+plug_w         = 12.4;  // plug overmould width
+plug_t         = 6.6;   // plug overmould thickness
+plug_l         = 22;    // whole plug, metal tip to end of the overmould
+plug_insert    = 6.6;   // how far the metal tip goes into the socket
+fit            = 0.4;   // clearance around board and plug
+
 /* [Wiring] */
-back_layer     = 1.4;   // material behind the magnets, holds the wire grooves
-groove_w       = 1.8;   // fits the cable's insulated power wires
-groove_d       = 1.4;   // as deep as the back layer
-contact_d      = 6;     // window behind each magnet where the bare wire touches it
-cable_hole_d   = 7;     // centre hole the wires come up through
+groove_w       = 1.8;   // fits the board-to-magnet wires
+groove_d       = 1.4;
+contact_d      = 6;     // window behind each magnet for wire and pin
 
 /* [Wall screws] */
 screw_spacing  = 44;    // horizontal, centred
@@ -45,11 +63,28 @@ screw_head_d   = 7;
 $fn = 64;
 eps = 0.01;
 
-plate_t = back_layer + magnet_t;   // 4.4 mm with the defaults
+// Depth of the compartment (from the wall) is set by the plug, which lies
+// flat against the wall.
+bay_d    = plug_t + fit;
+plate_t  = bay_d + front_skin;                 // 8.2 mm with the defaults
+back_layer = plate_t - magnet_t;               // behind the magnets
+pin_l    = back_layer - 0.8;                   // leaves 0.8 mm for the wire coil
+
+// The plug's cable end sits at the plate centre, where the cable turns into
+// the wall. The plug points up; the board sits above it.
+plug_y0  = 1;                                  // cable end of the plug
+plug_y1  = plug_y0 + plug_l;                   // metal tip
+mouth_y  = plug_y1 - plug_insert;              // socket mouth / board edge
+board_y0 = mouth_y - 0.5;
+board_y1 = board_y0 + board_l;
+// The PCB rests on a shelf so the socket lines up with the plug's centre.
+socket_c = board_pcb_t + socket_h / 2;         // socket centre above PCB back
+board_floor = plug_t / 2 + socket_c;           // PCB back face, from the wall
 
 assert(magnet_dx / 2 + magnet_d / 2 + 1.2 <= plate_w / 2, "magnets too close to the side edge");
 assert(magnet_dy / 2 + magnet_d / 2 + 1.2 <= plate_h / 2, "magnets too close to the top or bottom edge");
-assert(groove_d <= back_layer, "wire grooves deeper than the back layer");
+assert(board_y1 + fit + 2 <= plate_h / 2, "board bay runs into the top edge");
+assert(board_floor <= plate_t - 0.8, "board shelf leaves too little front skin");
 
 magnets = [for (sx = [-1, 1], sy = [-1, 1]) [sx * magnet_dx / 2, sy * magnet_dy / 2]];
 
@@ -57,8 +92,7 @@ module rounded_rect(w, h, r) {
     offset(r) square([w - 2 * r, h - 2 * r], center = true);
 }
 
-module plate() {
-    // flat back, straight sides, front edge softened
+module plate_body() {
     hull() {
         linear_extrude(plate_t - edge_round)
             rounded_rect(plate_w, plate_h, corner_r);
@@ -69,42 +103,63 @@ module plate() {
 
 module magnet_pockets() {
     for (m = magnets) translate([m[0], m[1], 0]) {
-        // pocket from the front, magnet ends up flush with the front face
         translate([0, 0, back_layer]) cylinder(d = magnet_d + magnet_fit, h = magnet_t + eps);
-        // window behind it so the wire can touch the magnet's back
         translate([0, 0, -eps]) cylinder(d = contact_d, h = back_layer + 2 * eps);
     }
 }
 
-// Grooves on the back face from the centre hole to every magnet. Only two
-// magnets are wired (+5 V to a top one, ground to a bottom one); the others
-// just help hold the Playdate. Grooves go to all four so either side works.
-module wire_grooves() {
-    for (m = magnets)
-        hull() {
-            translate([0, 0, -eps]) cylinder(d = groove_w, h = groove_d + eps, $fn = 16);
-            translate([m[0], m[1], -eps]) cylinder(d = groove_w, h = groove_d + eps, $fn = 16);
-        }
+// Compartment, open to the wall: a channel for the plug, a deeper-set bay
+// for the board, and room around the centre for the cable to turn into the
+// wall hole.
+module compartment() {
+    pw = plug_w + 2 * fit;
+    // plug channel, full depth
+    translate([-pw / 2, plug_y0 - 9, -eps]) cube([pw, plug_l + 9 + 0.5, bay_d + eps]);
+    // board bay, down to the shelf the PCB rests on
+    bw = board_w + 2 * fit;
+    translate([-bw / 2, board_y0 - fit, -eps]) cube([bw, board_l + 2 * fit, board_floor + eps]);
+    // solder-pad end of the board: room for the wire joints, full depth
+    translate([-bw / 2, board_y1 - 3, -eps]) cube([bw, 3 + fit, bay_d + eps]);
 }
 
-module cable_hole() {
-    translate([0, 0, -eps]) cylinder(d = cable_hole_d, h = plate_t + 2 * eps);
+// Grooves on the back from the board end of the compartment to every magnet.
+// Only two magnets are wired (+5 V to a top one, ground to a bottom one); the
+// others just help hold the Playdate. Grooves go to all four so either side
+// works.
+module wire_grooves() {
+    start = [0, board_y1 - 1.5];
+    for (m = magnets)
+        hull() {
+            translate([start[0], start[1], -eps]) cylinder(d = groove_w, h = groove_d + eps, $fn = 16);
+            translate([m[0], m[1], -eps]) cylinder(d = groove_w, h = groove_d + eps, $fn = 16);
+        }
 }
 
 module screw_holes() {
     for (sx = [-1, 1]) translate([sx * screw_spacing / 2, 0, 0]) {
         translate([0, 0, -eps]) cylinder(d = screw_d + 0.3, h = plate_t + 2 * eps);
-        // 90 degree countersink, head ends flush with the front face
         sink = (screw_head_d - screw_d) / 2;
         translate([0, 0, plate_t - sink - 0.2])
             cylinder(d1 = screw_d + 0.3, d2 = screw_head_d + 0.4, h = sink + 0.2 + eps);
     }
 }
 
-difference() {
-    plate();
-    magnet_pockets();
-    wire_grooves();
-    cable_hole();
-    screw_holes();
+module plate() {
+    difference() {
+        plate_body();
+        magnet_pockets();
+        compartment();
+        wire_grooves();
+        screw_holes();
+    }
 }
+
+// Contact pins: push into the window behind a magnet, over the coiled bare
+// wire. The wall holds them in. Print two (four if you wire both sides).
+module pins() {
+    for (i = [0 : 3])
+        translate([i * (contact_d + 3), 0, 0])
+            cylinder(d = contact_d - 0.3, h = pin_l);
+}
+
+if (part == "pins") pins(); else plate();
