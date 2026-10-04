@@ -17,11 +17,25 @@ This is a new design. It works the same way as the original (magnets carry
 | Part | Qty | Notes |
 | --- | --- | --- |
 | Neodymium disc magnet, 8 mm × 3 mm, N52, nickel plated | 4 | Plated magnets conduct, which is what carries the charge. Buy a few spares. |
-| USB-C female breakout board, "5V" 2-pin type | 1 | The kind with the two 5.1 kΩ CC resistors fitted, so a USB-C charger switches on 5 V. Board about 13 × 11 mm. |
+| USB-C female breakout board, 5 V | 1 | See below. Anything up to 22 × 20 mm fits the bay. |
 | USB-C cable | 1 | Straight plug. Runs through the wall to your charger. |
 | Thin wire, red and black | about 10 cm each | 24 to 28 AWG, from board to magnets. |
 | Countersunk wood screw, 3.5 mm (#6), about 30 mm | 2 | Plus wall plugs. |
 | Superglue | | For the magnets and the board. |
+
+### Which board
+
+Search for **"USB-C female breakout board 2 pin 5V"** (often listed as
+"Type-C 2P PCB" or "USB-C power socket board"). They cost very little, are
+about 10 to 15 mm square, and have just two solder pads, VBUS (+) and GND.
+
+The one thing that matters: it must have the **two 5.1 kΩ resistors on the
+CC pins** (two tiny "512" parts next to the socket). Without them a USB-C
+charger won't switch on 5 V and nothing charges. Bare 24-pin breakouts
+usually leave them off; the 2-pin "5V" boards have them.
+
+If you'd rather buy from a known brand, the Adafruit USB Type C Breakout
+Board, Downstream Connection (product 4090) has the resistors and fits.
 
 Print `playdate_flush_dock.stl` (the plate) and `playdate_contact_pins.stl`
 (four small pins; you need two).
@@ -51,7 +65,7 @@ playdate_flush_dock.scad` and the same with `-D 'part="pins"'` for the pins):
 | --- | --- | --- |
 | `magnet_dx` | 67 | Centre-to-centre of the Playdate's back corner screws, side to side |
 | `magnet_dy` | 65 | Centre-to-centre of the back corner screws, top to bottom |
-| `board_w`, `board_l` | 13, 11 | Your breakout board's width and length |
+| `board_w`, `board_l` | 22, 20 | Bay size; only change it if your board is bigger |
 | `plug_w`, `plug_t`, `plug_l` | 12.4, 6.6, 22 | Your cable's plug: width, thickness, length to the end of the moulding |
 
 The plate's thickness follows the plug: it is the plug thickness plus
@@ -69,7 +83,8 @@ The plate's thickness follows the plug: it is the plug thickness plus
    holes. Drill the centre hole 12 mm and check for pipes and cables first.
 2. Glue the magnets in flush with the front.
 3. Solder red to the board's VBUS (+) pad and black to GND. Glue the board
-   into its bay, socket facing the plug channel.
+   into its bay, socket facing the plug channel, pushed against the plug end
+   of the bay and centred side to side.
 4. Lay red in the groove to a top magnet and black to the bottom magnet on
    the same side. Strip about 6 mm, coil it flat into the window behind the
    magnet, and press a pin in on top.

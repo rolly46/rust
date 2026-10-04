@@ -37,11 +37,12 @@ magnet_t       = 3;
 magnet_fit     = 0.15;  // added to the pocket diameter; glue the magnets in
 
 /* [USB-C board and plug] */
-// MEASURE your breakout board and cable. Defaults suit the common 2-pin
-// USB-C "5V" breakout boards (with the CC resistors fitted) and a standard
-// straight USB-C plug.
-board_w        = 13;    // across the socket
-board_l        = 11;    // along the plug direction
+// The board bay is deliberately roomy: 22 x 20 mm fits nearly every USB-C
+// "5V" breakout board (the kind with the two 5.1 kOhm CC resistors fitted).
+// Push the board against the plug end of the bay, socket centred, and glue
+// it. Plug defaults suit a standard straight USB-C cable.
+board_w        = 22;    // bay width, across the socket
+board_l        = 20;    // bay length, along the plug direction
 board_pcb_t    = 1.0;
 socket_h       = 3.3;   // height of the socket above the PCB
 plug_w         = 12.4;  // plug overmould width
@@ -119,7 +120,7 @@ module compartment() {
     bw = board_w + 2 * fit;
     translate([-bw / 2, board_y0 - fit, -eps]) cube([bw, board_l + 2 * fit, board_floor + eps]);
     // solder-pad end of the board: room for the wire joints, full depth
-    translate([-bw / 2, board_y1 - 3, -eps]) cube([bw, 3 + fit, bay_d + eps]);
+    translate([-bw / 2, board_y1 - 5, -eps]) cube([bw, 5 + fit, bay_d + eps]);
 }
 
 // Grooves on the back from the board end of the compartment to every magnet.
