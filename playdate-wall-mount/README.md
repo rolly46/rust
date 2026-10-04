@@ -1,71 +1,78 @@
-# Playdate magnetic dock: wall bracket
+# Playdate flush wall dock
 
-A wall-mount adapter for the
+A wall-mounted magnetic charging dock for the Playdate, based on the
 [Playdate Magnetic Charging Dock](https://makerworld.com/en/models/1635754)
-on MakerWorld. It replaces the angled desk foot (`playdate base.stl`) and
-clamps to the dock the same way the foot does: the two alignment pegs drop into
-sockets and the cable nut screws onto the holder from behind. The bracket then
-hangs on two wall screws through keyhole slots.
+on MakerWorld. It is one thin printed plate, 4.4 mm thick, that screws flat
+to the wall. The USB cable comes out of a hole in the wall behind the centre
+of the plate, so no cable shows.
 
-![Dock side (left) and wall side (right)](preview.png)
+![Front (left) and back (right)](preview.png)
 
-This is a new part designed to fit the original; it contains none of the
-original model's files. You still print every other part of the dock from the
-MakerWorld download.
+This is a new design. It works the same way as the original (8 × 3 mm
+magnets carry 5 V to the Playdate) but contains none of the original
+model's files.
 
-## What changes
+## How it works
 
-| Desk stand | Wall bracket |
-| --- | --- |
-| Angled foot tilts the dock back | Dock hangs flat, 20 mm off the wall |
-| Cable exits behind the foot | Cable bends down inside the bracket and drops out the bottom |
-| Playdate held by magnets only | Same by default; set `ledge = true` for a shelf that catches the Playdate if it slips |
+- Four 8 × 3 mm neodymium magnets sit flush in the front face and hold the
+  Playdate. Two of them are wired: +5 V (red) to a top magnet and ground
+  (black) to the bottom magnet on the same side, as on the original dock.
+- The back face is completely flat. Grooves in it run from the centre hole
+  to each magnet, and the wires lie in them.
+- Behind each magnet is a small window. The stripped end of a wire sits
+  there, and screwing the plate to the wall clamps it against the magnet.
+- Two countersunk screws through the front fix it to the wall. The Playdate
+  covers them when it is docked.
 
-## Measure before printing
+## Check before printing
 
-I couldn't download the original STLs (MakerWorld needs a login), so the
-interface dimensions are estimates from the model's photos and assembly
-diagrams. Check these in `playdate_wall_bracket.scad` against your printed
-parts (calipers on the original foot are easiest), then re-export:
+The magnets have to land on the Playdate's back corner screws for charging
+to work. Measure your Playdate and set these in `playdate_flush_dock.scad`:
 
 | Parameter | Default | What to measure |
 | --- | --- | --- |
-| `dock_width` | 78 | Outer width of the dock |
-| `dock_depth` | 16 | Dock thickness, back plate to magnet face |
-| `iface_z` | 10 | Dock bottom edge to the centre of the cable nut |
-| `peg_spacing` | 50 | Centre-to-centre of the two alignment pegs |
-| `peg_d` | 6.0 | Alignment peg diameter |
-| `holder_d` | 14.0 | Outer diameter of the threaded nut holder |
-| `mount_t` | 4 | Thickness of the original foot's flat top plate (the holder thread is sized to clamp this) |
-| `nut_flange_d` | 22 | Largest diameter of the cable nut |
+| `magnet_dx` | 67 | Centre-to-centre of the back corner screws, side to side |
+| `magnet_dy` | 65 | Centre-to-centre of the back corner screws, top to bottom |
+| `groove_w` | 1.8 | Outer diameter of the cable's red and black wires, plus a little |
 
-The other settings (standoff, ledge, screw size and spacing) are in the same
-file. Open it in OpenSCAD and use the Customizer panel, or export from the
-command line:
+Then export the STL in OpenSCAD, or from the command line:
 
 ```sh
-openscad -o playdate_wall_bracket.stl playdate_wall_bracket.scad
+openscad -o playdate_flush_dock.stl playdate_flush_dock.scad
 ```
 
-The included `playdate_wall_bracket.stl` uses the defaults above.
+The included `playdate_flush_dock.stl` uses the defaults.
 
 ## Printing
 
-- Print it upright, as it sits on the wall, with the bottom face on the bed.
-  Every hole and overhang is shaped to print without supports.
-- PLA or PETG, 3 or more walls, 20% or more infill. The keyhole slots carry
-  the load, so don't skimp on walls.
+- Print it back face down. The back stays dead flat for the wall, and no
+  supports are needed.
+- PLA or PETG, 0.2 mm layers, 100% infill is cheap at this size and makes
+  the thin plate stiff.
 
-## Assembly
+## Parts
 
-1. Build the dock as in the original instructions, but leave the cable nut off.
-2. Feed the cable through the large centre hole from the dock side, seat the
-   pegs in their sockets, and screw the nut onto the holder from inside the
-   open pocket on the wall side.
-3. Bend the cable down and out through the gap in the bottom of the bracket.
-4. Put two screws in the wall, 54 mm apart and level, with the heads standing
-   about 3 mm out from the wall. Defaults suit #8 or 4 mm wood screws
-   (head up to 9 mm). Use wall plugs in drywall.
-5. Line the round keyhole openings up with the screw heads, push in, and let
-   the dock drop about 8 mm to lock. If it's loose, turn the screws in a
-   little; if it won't go on, back them out.
+- 4 × 8 × 3 mm neodymium disc magnets
+- A USB-A cable you can cut (5 V, 2 wires used)
+- 2 × 3.5 mm (#6) countersunk wood screws, about 30 mm, plus wall plugs
+- Superglue for the magnets
+
+## Fitting
+
+1. Mark the wall with the plate held level: the centre hole and the two
+   screw holes. Drill the centre hole about 10 mm across and check for
+   pipes and cables behind the wall first.
+2. Feed the cable through the wall so its end comes out of the centre hole.
+   Strip the outer jacket back to the wall surface. Cut off the data wires
+   (usually white and green).
+3. Glue the magnets into their pockets, flush with the front. Check that all
+   four pull the same way toward the Playdate before the glue sets.
+4. Thread the red and black wires through the centre hole from the back and
+   lay them in the grooves to a top magnet (red) and the bottom magnet on
+   the same side (black). Strip about 8 mm, twist it into a small flat coil
+   and tuck it into the window behind the magnet.
+5. Push the cable slack back into the wall, hold the plate flat, and drive
+   both screws until the plate is tight against the wall. That clamps the
+   wire coils onto the magnets.
+6. Dock the Playdate and check it charges. If it doesn't, swap which magnets
+   the red and black wires go to.
