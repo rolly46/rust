@@ -16,7 +16,8 @@ This is a new design. It works the same way as the original (magnets carry
 
 | Part | Qty | Notes |
 | --- | --- | --- |
-| Neodymium disc magnet, 8 mm × 3 mm, N52, nickel plated | 4 | Plated magnets conduct, which is what carries the charge. Buy a few spares. |
+| Neodymium disc magnet, 8 mm × 3 mm, N52, nickel plated | 4 | The charging magnets. Plated magnets conduct, which is what carries the charge. Buy a few spares. |
+| Neodymium disc magnet, 15 mm × 3 mm | 3 | The holding magnets in the middle. Any coating; they carry no current. |
 | USB-C female breakout board, 5 V | 1 | See below. Anything up to 22 × 20 mm fits the bay. |
 | USB-C cable | 1 | Straight plug. Runs through the wall to your charger. |
 | Thin wire, red and black | about 10 cm each | 24 to 28 AWG, from board to magnets. |
@@ -53,8 +54,12 @@ Print `playdate_flush_dock.stl` (the plate) and `playdate_contact_pins.stl`
   is a small window: the bare end of a wire goes in there, a printed pin
   goes on top, and the wall pushes the pin in so the wire presses on the
   magnet.
-- Two countersunk screws through the front fix it to the wall. The Playdate
-  covers them when it is docked.
+- Three 15 × 3 mm magnets near the middle do most of the holding, the way
+  the [Minimalist Playdate Stand](https://www.printables.com/model/238033-minimalist-playdate-stand)
+  holds the Playdate. Two sit either side of the plug at the Playdate's
+  centre height and one sits below.
+- Two countersunk screws through the front, low on the plate, fix it to the
+  wall. The Playdate covers them when it is docked.
 
 ## Check before printing
 
@@ -81,8 +86,9 @@ The plate's thickness follows the plug: it is the plug thickness plus
 ## Fitting
 
 1. Hold the plate level on the wall and mark the centre and the two screw
-   holes. Drill the centre hole 12 mm and check for pipes and cables first.
-2. Glue the magnets in flush with the front.
+   holes (40 mm apart, 24 mm below the centre). Drill the centre hole 12 mm and check for pipes and cables first.
+2. Glue all seven magnets in flush with the front. The 15 mm ones can face
+   either way; the 8 mm ones should all face the same way.
 3. Solder red to the board's VBUS (+) pad and black to GND. Glue the board
    into its bay, socket facing the plug channel, pushed against the plug end
    of the bay and centred side to side.

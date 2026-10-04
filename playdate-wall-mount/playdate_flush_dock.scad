@@ -11,6 +11,7 @@
 //   - wires from the board's 5 V and GND pads run in grooves on the back to
 //     the magnets; small printed pins press each bare wire onto its magnet,
 //     and the wall holds the pins in
+//   - three 15 x 3 mm magnets near the middle add holding force
 //   - two countersunk screws through the front fix it to the wall; the
 //     Playdate covers them when it is docked
 //
@@ -36,6 +37,16 @@ magnet_d       = 8;
 magnet_t       = 3;
 magnet_fit     = 0.15;  // added to the pocket diameter; glue the magnets in
 
+/* [Holding magnets] */
+// Three bigger magnets near the middle of the Playdate's back do most of the
+// holding, as on the Minimalist Playdate Stand. They carry no current. Two
+// sit either side of the plug channel at the Playdate's centre height and
+// one below it.
+hold_d         = 15;
+hold_t         = 3;     // listed 3 mm; often nearer 2.6, which just sits a little lower
+hold_fit       = 0.2;
+hold_magnets   = [[-16, 0], [16, 0], [0, -18]];
+
 /* [USB-C board and plug] */
 // The board bay is deliberately roomy: 22 x 20 mm fits nearly every USB-C
 // "5V" breakout board (the kind with the two 5.1 kOhm CC resistors fitted).
@@ -57,7 +68,7 @@ groove_d       = 1.4;
 contact_d      = 6;     // window behind each magnet for wire and pin
 
 /* [Wall screws] */
-screw_spacing  = 44;    // horizontal, centred
+screw_pos      = [[-20, -24], [20, -24]];
 screw_d        = 3.5;   // #6 / 3.5 mm countersunk wood screw
 screw_head_d   = 7;
 
@@ -86,6 +97,11 @@ assert(magnet_dx / 2 + magnet_d / 2 + 1.2 <= plate_w / 2, "magnets too close to 
 assert(magnet_dy / 2 + magnet_d / 2 + 1.2 <= plate_h / 2, "magnets too close to the top or bottom edge");
 assert(board_y1 + fit + 2 <= plate_h / 2, "board bay runs into the top edge");
 assert(board_floor <= plate_t - 0.8, "board shelf leaves too little front skin");
+// The holding magnets beside the plug channel need a wall between them and it.
+for (m = hold_magnets)
+    assert(abs(m[1]) > plug_y0 + plug_l + 8 || m[1] + hold_d / 2 < plug_y0 - 9 - 1.5
+           || abs(m[0]) - hold_d / 2 >= (plug_w + 2 * fit) / 2 + 1.5,
+           "a holding magnet runs into the plug channel");
 
 magnets = [for (sx = [-1, 1], sy = [-1, 1]) [sx * magnet_dx / 2, sy * magnet_dy / 2]];
 
@@ -136,8 +152,14 @@ module wire_grooves() {
         }
 }
 
+module hold_pockets() {
+    for (m = hold_magnets)
+        translate([m[0], m[1], plate_t - hold_t])
+            cylinder(d = hold_d + hold_fit, h = hold_t + eps);
+}
+
 module screw_holes() {
-    for (sx = [-1, 1]) translate([sx * screw_spacing / 2, 0, 0]) {
+    for (p = screw_pos) translate([p[0], p[1], 0]) {
         translate([0, 0, -eps]) cylinder(d = screw_d + 0.3, h = plate_t + 2 * eps);
         sink = (screw_head_d - screw_d) / 2;
         translate([0, 0, plate_t - sink - 0.2])
@@ -149,6 +171,7 @@ module plate() {
     difference() {
         plate_body();
         magnet_pockets();
+        hold_pockets();
         compartment();
         wire_grooves();
         screw_holes();
